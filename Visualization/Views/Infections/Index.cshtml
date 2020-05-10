@@ -1,0 +1,13 @@
+﻿@model IEnumerable<DateTime>
+
+@{
+    ViewData["Title"] = "Dates";
+}
+
+<h2>Даты</h2>
+
+@foreach (var item in Model)
+{
+    <a asp-action="List" asp-route-date="@item.ToShortDateString()">@item.ToLongDateString()</a>
+    <br />
+}

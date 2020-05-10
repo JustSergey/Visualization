@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Visualization.Models.Infection>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h2>@Model.First().Date.ToLongDateString()</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Регион
+            </th>
+            <th>
+                Заражений
+            </th>
+            <th>
+                Выздоровлений
+            </th>
+            <th>
+                Смертей
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Region.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Infected)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recovered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Deaths)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
