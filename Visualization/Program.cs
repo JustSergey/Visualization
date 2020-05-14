@@ -39,23 +39,25 @@ namespace Visualization
             using (var context = new VisualizationContext(
                 serviceProvider.GetRequiredService<DbContextOptions<VisualizationContext>>()))
             {
-                if (context.Infections.Any())
+                if (context.Infections.Any() || context.Regions.Any())
                     return;
                 if (!File.Exists("initdata.txt"))
                     return;
 
+                List<Region> regions = new List<Region>();
                 string[] lines = File.ReadAllLines("initdata.txt");
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string[] line = lines[i].Split('\t');
+                    DateTime date = DateTime.Parse(line[0]);
                     string regionTitle = line[1];
-                    Region region = context.Regions.FirstOrDefault(r => r.Title == regionTitle);
+                    Region region = regions.Find(r => r.Title == regionTitle);
                     if (region == default)
                     {
                         region = new Region() { Title = regionTitle };
+                        regions.Add(region);
                         context.Regions.Add(region);
                     }
-                    DateTime date = DateTime.Parse(line[0]);
                     int infected = int.Parse(line[2]);
                     int recovered = int.Parse(line[3]);
                     int deaths = int.Parse(line[4]);
