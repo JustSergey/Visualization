@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Visualization.Data;
 using Visualization.Models;
 
@@ -20,7 +21,12 @@ namespace Visualization.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Dates()
         {
             var dates = _context.Infections
                 .Select(i => i.Date)
@@ -45,135 +51,43 @@ namespace Visualization.Controllers
             return View(await infections.ToListAsync());
         }
 
-        // GET: Infections/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public Task<IActionResult> Map()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var infection = await _context.Infections
-                .Include(i => i.Region)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (infection == null)
-            {
-                return NotFound();
-            }
-
-            return View(infection);
+            return Dates();
         }
 
-        // GET: Infections/Create
-        public IActionResult Create()
-        {
-            ViewBag.Regions = new SelectList(_context.Regions, "Id", "Title");
-            return View();
-        }
-
-        // POST: Infections/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,RegionId,Infected,Recovered,Deaths")] Infection infection)
+        public JsonResult GetInfections(string type)
         {
-            if (ModelState.IsValid)
+            if (type == "infections")
             {
-                _context.Add(infection);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewBag.Regions = new SelectList(_context.Regions, "Id", "Title", infection.RegionId);
-            return View(infection);
-        }
-
-        // GET: Infections/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var infection = await _context.Infections.FindAsync(id);
-            if (infection == null)
-            {
-                return NotFound();
-            }
-            ViewData["RegionId"] = new SelectList(_context.Regions, "Id", "Id", infection.RegionId);
-            return View(infection);
-        }
-
-        // POST: Infections/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,RegionId,Infected,Recovered,Deaths")] Infection infection)
-        {
-            if (id != infection.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(infection);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!InfectionExists(infection.Id))
+                var infections = _context.Infections
+                    .OrderBy(i => i.Date)
+                    .AsEnumerable()
+                    .GroupBy(i => i.Date)
+                    .Select(g => new
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                        Date = g.Key,
+                        Infections = g
+                            .Select(i => new
+                            {
+                                Region = i.RegionId,
+                                i.Infected,
+                                i.Recovered,
+                                i.Deaths
+                            }).OrderByDescending(i => i.Infected)
+                    });
+                return Json(infections);
             }
-            ViewData["RegionId"] = new SelectList(_context.Regions, "Id", "Id", infection.RegionId);
-            return View(infection);
-        }
-
-        // GET: Infections/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            else if (type == "regions")
             {
-                return NotFound();
+                var regions = _context.Regions
+                    .OrderBy(r => r.Id)
+                    .AsEnumerable();
+                return Json(regions);
             }
-
-            var infection = await _context.Infections
-                .Include(i => i.Region)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (infection == null)
-            {
-                return NotFound();
-            }
-
-            return View(infection);
-        }
-
-        // POST: Infections/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var infection = await _context.Infections.FindAsync(id);
-            _context.Infections.Remove(infection);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool InfectionExists(int id)
-        {
-            return _context.Infections.Any(e => e.Id == id);
+            else
+                return null;
         }
     }
 }

@@ -1,0 +1,24 @@
+﻿@model IEnumerable<DateTime>
+
+@{
+    ViewData["Title"] = "Map";
+}
+
+<span id="trackBarValue">@Model.First().ToShortDateString()</span>
+<input type="range" min="0" max="@(Model.Count() - 1)" value="0" id="trackbar" onchange="onChangeTrackBar()" />
+<svg viewBox="0 0 2000 2000" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    @for (int x = 100, y = 100, i = 1; i < 86; i++)
+    {
+        <circle id="region_circle_@i" cx="@x" cy="@y" r="0" fill="red" />
+        x += 200;
+        if (x >= 2000)
+        {
+            x = 100;
+            y += 200;
+        }
+    }
+</svg>
+
+@section Scripts {
+    <script src="~/js/Map.js" asp-append-version="true"></script>
+}
