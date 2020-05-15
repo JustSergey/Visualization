@@ -6,7 +6,7 @@ function onChangeTrackBar() {
     let index = $('#trackbar').val();
     let newDate = addDays(beginDate, index);
     document.getElementById('trackBarValue').innerHTML = newDate.toLocaleDateString();
-    let max = Math.log(infections[index].infections[0].infected);
+    let max = Math.log(infections[infections.length - 1].infections[0].infected);
     for (i = 0; i < infections[index].infections.length; i++) {
         let size = Math.log(infections[index].infections[i].infected) / max * 100;
         let region = infections[index].infections[i].region;
