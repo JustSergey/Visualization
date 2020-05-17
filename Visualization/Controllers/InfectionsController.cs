@@ -75,7 +75,7 @@ namespace Visualization.Controllers
                                 i.Infected,
                                 i.Recovered,
                                 i.Deaths
-                            }).OrderByDescending(i => i.Infected)
+                            }).OrderBy(i => i.Region)
                     });
                 return Json(infections);
             }

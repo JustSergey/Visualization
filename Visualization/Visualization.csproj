@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\js\Map.js" />
+    <None Include="Views\Shared\Map.svg.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
