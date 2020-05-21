@@ -1,7 +1,10 @@
 ﻿var infections = getJson('GetInfections', 'infections');
 var regions = getJson('GetInfections', 'regions');
 var beginDate = parseDate(document.getElementById('trackBarValue').innerHTML);
-var max = getMax();
+var maxInfected = getMax('infected');
+var maxRecovered = getMax('recovered');
+var maxDeaths = getMax('deaths');
+var type = 'infected';
 
 $(function () {
     onChangeTrackBar();
@@ -53,7 +56,21 @@ function onChangeTrackBar() {
         let size = 0;
         if (index < infections[date].infections.length) {
             if (i == infections[date].infections[index].region) {
-                size = Math.log(infections[date].infections[index].infected) / max * 20;
+                if (type == 'infected') {
+                    let data = infections[date].infections[index].infected;
+                    if (data > 0)
+                        size = Math.log(data) / maxInfected * 20;
+                }
+                else if (type == 'recovered') {
+                    let data = infections[date].infections[index].recovered;
+                    if (data > 0)
+                        size = Math.log(data) / maxRecovered * 20;
+                }
+                else if (type == 'deaths') {
+                    let data = infections[date].infections[index].deaths;
+                    if (data > 0)
+                        size = Math.log(data) / maxDeaths * 20;
+                }
                 index++;
             }
         }
@@ -61,12 +78,29 @@ function onChangeTrackBar() {
     }
 }
 
-function getMax() {
+function onChangeType(t) {
+    type = t;
+    if (type == 'infected')
+        $('circle').css({ 'fill': '#fb5f3d' });
+    else if (type == 'recovered')
+        $('circle').css({ 'fill': 'green' });
+    else if (type == 'deaths')
+        $('circle').css({ 'fill': 'black' });
+    onChangeTrackBar();
+}
+
+function getMax(type) {
     let max = 0;
     for (i = 0; i < infections[infections.length - 1].infections.length; i++) {
-        let inf = infections[infections.length - 1].infections[i].infected;
-        if (inf > max)
-            max = inf;
+        let data;
+        if (type == 'infected')
+            data = infections[infections.length - 1].infections[i].infected;
+        else if (type == 'recovered')
+            data = infections[infections.length - 1].infections[i].recovered;
+        else if (type == 'deaths')
+            data = infections[infections.length - 1].infections[i].deaths;
+        if (data > max)
+            max = data;
     }
     return Math.log(max);
 }
