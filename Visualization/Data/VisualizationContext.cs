@@ -13,5 +13,10 @@ namespace Visualization.Data
 
         public DbSet<Region> Regions { get; set; }
         public DbSet<Infection> Infections { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Region>().ToTable("Region");
+            modelBuilder.Entity<Infection>().ToTable("Infection");
+        }
     }
 }

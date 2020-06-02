@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<Visualization.Models.Infection>
+@using System.Globalization;
 
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "Список по дням";
 }
 
 @{
     double maxInfected = Math.Log(Model.First().Infected);
 }
 
-<h2>@Model.First().Date.ToLongDateString()</h2>
+<h2>@Model.First().Date.ToString("m", CultureInfo.CreateSpecificCulture("ru-RU"))</h2>
 
 <table class="table">
     <thead>

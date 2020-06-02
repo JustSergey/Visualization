@@ -1,14 +1,16 @@
 ﻿@model IEnumerable<DateTime>
+@using System.Globalization;
+
 
 @{
-    ViewData["Title"] = "Map";
+    ViewData["Title"] = "Карта";
 }
 
 <table class="table">
     <tbody>
         <tr>
             <td>
-                <span id="trackBarValue">@Model.First().ToShortDateString()</span>
+                <span id="trackBarValue">@Model.First().ToString("d", CultureInfo.CreateSpecificCulture("ru-RU"))</span>
                 <input type="range" min="0" max="@(Model.Count() - 1)" value="0" id="trackbar" onchange="onChangeTrackBar()" />
             </td>
             <td>
