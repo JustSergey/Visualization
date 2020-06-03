@@ -5,8 +5,11 @@ var maxInfected = getMax('infected');
 var maxRecovered = getMax('recovered');
 var maxDeaths = getMax('deaths');
 var type = 'infected';
+var moving = false;
+
 
 $(function () {
+    var playButton = $("#play-button");
     onChangeTrackBar();
     for (i = 1; i < regions.length + 1; i++) {
         $('#region_' + i)
@@ -29,9 +32,37 @@ $(function () {
     });
 })
 
+function animation() {
+    var button = document.getElementById("play-button");
+    if (button.value == "Play") {
+        button.value = "Pause";
+        moving = false;
+        timer = setInterval(step, 100);
+    }
+    else {
+        button.value = "Play";
+        moving = true;
+        clearInterval(timer);
+    }
+}
+
+function step() {
+    var trackbar = document.getElementById("trackbar");
+    if (trackbar.value == trackbar.max) {
+        trackbar.value = 0;
+        moving = false;
+        clearInterval(timer);
+        let button = document.getElementById("play-button");
+        button.value = "Play";
+    }
+    else
+        trackbar.value++;
+    onChangeTrackBar();
+}
+
 function mouseOver(region) {
     $('<div class="info_panel">' +
-        region.title + 
+        region.title +
         '</div>'
     ).appendTo('body');
 }
@@ -86,6 +117,10 @@ function onChangeType(t) {
         $('circle').css({ 'fill': 'green' });
     else if (type == 'deaths')
         $('circle').css({ 'fill': 'black' });
+    moving = false;
+    clearInterval(timer);
+    let button = document.getElementById("play-button");
+    button.value = "Play";
     onChangeTrackBar();
 }
 

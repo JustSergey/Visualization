@@ -6,57 +6,57 @@
     ViewData["Title"] = "Карта";
 }
 
-<table class="table">
-    <tbody>
-        <tr>
-            <td>
-                <span id="trackBarValue">@Model.First().ToString("d", CultureInfo.CreateSpecificCulture("ru-RU"))</span>
-                <input type="range" min="0" max="@(Model.Count() - 1)" value="0" id="trackbar" onchange="onChangeTrackBar()" />
-            </td>
-            <td>
-                <input type="button" onclick="onChangeType('infected')" value="Заражения" />
-            </td>
-            <td>
-                <input type="button" onclick="onChangeType('recovered')" value="Выздоровления" />
-            </td>
-            <td>
-                <input type="button" onclick="onChangeType('deaths')" value="Смерти" />
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                @await Html.PartialAsync("Map.svg")
-            </td>
-            <td>
-                <table class="table">
-                    <thead>
+    <div class="container">
+        <table class="table header">
+            <tbody>
+                <tr>
+                    <td>
+                        <input id="play-button" type="button" onclick="animation()" value="Play" />
+                        <span id="trackBarValue">@Model.First().ToString("d", CultureInfo.CreateSpecificCulture("ru-RU"))</span>
+                        <input type="range" min="0" max="@(Model.Count() - 1)" value="0" id="trackbar" onchange="onChangeTrackBar()" />
+                    </td>
+                    <td>
+                        <input type="button" onclick="onChangeType('infected')" value="Заражения" />
+                    </td>
+                    <td>
+                        <input type="button" onclick="onChangeType('recovered')" value="Выздоровления" />
+                    </td>
+                    <td>
+                        <input type="button" onclick="onChangeType('deaths')" value="Смерти" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="map">
+            @await Html.PartialAsync("Map.svg")
+        </div>
+        <div>
+            <table class="table increase">
+                <thead>
+                    <tr>
+                        <th>Регион</th>
+                        <th>Дневной рост</th>
+                        <th>Средний рост</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < 5; i++)
+                    {
                         <tr>
-                            <th>Регион</th>
-                            <th>Дневной рост</th>
-                            <th>Средний рост</th>
+                            <th>Москва</th>
+                            <th>200%</th>
+                            <th>150%</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <tr>
-                                <th>Москва</th>
-                                <th>200%</th>
-                                <th>150%</th>
-                            </tr>
-                            <tr>
-                                <th>Иркутск</th>
-                                <th>30%</th>
-                                <th>10%</th>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
+                        <tr>
+                            <th>Иркутск</th>
+                            <th>30%</th>
+                            <th>10%</th>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 @section Scripts {
     <script src="~/js/Map.js" asp-append-version="true"></script>
