@@ -1,6 +1,5 @@
-﻿@model IEnumerable<DateTime>
+﻿@model MapData
 @using System.Globalization;
-
 
 @{
     ViewData["Title"] = "Карта";
@@ -12,8 +11,8 @@
                 <tr>
                     <td>
                         <input id="play-button" type="button" onclick="animation()" value="Play" />
-                        <span id="trackBarValue">@Model.First().ToString("d", CultureInfo.CreateSpecificCulture("ru-RU"))</span>
-                        <input type="range" min="0" max="@(Model.Count() - 1)" value="0" id="trackbar" onchange="onChangeTrackBar()" />
+                        <span id="trackBarValue">@Model.Dates.First().ToString("d", CultureInfo.CreateSpecificCulture("ru-RU"))</span>
+                        <input type="range" min="0" max="@(Model.Dates.Count() - 1)" value="0" id="trackbar" onchange="onChangeTrackBar()" />
                     </td>
                     <td>
                         <input type="button" onclick="onChangeType('infected')" value="Заражения" />
@@ -40,17 +39,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < 5; i++)
+                    @for (int i = 0; i < Model.Regions.Count(); i++)
                     {
                         <tr>
-                            <th>Москва</th>
-                            <th>200%</th>
-                            <th>150%</th>
-                        </tr>
-                        <tr>
-                            <th>Иркутск</th>
-                            <th>30%</th>
-                            <th>10%</th>
+                            <th>@Model.Regions[i].Title</th>
+                            <th id="increase_@Model.Regions[i].Id"></th>
+                            <th id="ave_increase_@Model.Regions[i].Id"></th>
                         </tr>
                     }
                 </tbody>

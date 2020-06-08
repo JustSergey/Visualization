@@ -6,7 +6,8 @@ var maxRecovered = getMax('recovered');
 var maxDeaths = getMax('deaths');
 var type = 'infected';
 var moving = false;
-
+var increase = getJson('GetIncrease', 'daily');
+var ave_increase = getJson('GetIncrease', 'average');
 
 $(function () {
     var playButton = $("#play-button");
@@ -37,7 +38,7 @@ function animation() {
     if (button.value == "Play") {
         button.value = "Pause";
         moving = false;
-        timer = setInterval(step, 100);
+        timer = setInterval(step, 200);
     }
     else {
         button.value = "Play";
@@ -91,16 +92,22 @@ function onChangeTrackBar() {
                     let data = infections[date].infections[index].infected;
                     if (data > 0)
                         size = Math.log(data) / maxInfected * 20;
+                    document.getElementById('increase_' + i).innerHTML = increase[date].increases[index].inf + '%';
+                    document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].inf + '%';
                 }
                 else if (type == 'recovered') {
                     let data = infections[date].infections[index].recovered;
                     if (data > 0)
                         size = Math.log(data) / maxRecovered * 20;
+                    document.getElementById('increase_' + i).innerHTML = increase[date].increases[index].rec + '%';
+                    document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].rec + '%';
                 }
                 else if (type == 'deaths') {
                     let data = infections[date].infections[index].deaths;
                     if (data > 0)
                         size = Math.log(data) / maxDeaths * 20;
+                    document.getElementById('increase_' + i).innerHTML = increase[date].increases[index].dea + '%';
+                    document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].dea + '%';
                 }
                 index++;
             }
