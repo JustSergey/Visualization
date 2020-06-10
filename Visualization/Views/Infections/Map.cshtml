@@ -29,8 +29,8 @@
         <div class="map">
             @await Html.PartialAsync("Map.svg")
         </div>
-        <div>
-            <table class="table increase">
+        <div class="increase">
+            <table>
                 <thead>
                     <tr>
                         <th>Регион</th>
@@ -41,7 +41,7 @@
                 <tbody>
                     @for (int i = 0; i < Model.Regions.Count(); i++)
                     {
-                        <tr>
+                        <tr id="region-table-@Model.Regions[i].Id">
                             <th>@Model.Regions[i].Title</th>
                             <th id="increase_@Model.Regions[i].Id"></th>
                             <th id="ave_increase_@Model.Regions[i].Id"></th>

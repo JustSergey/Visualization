@@ -38,7 +38,7 @@ function animation() {
     if (button.value == "Play") {
         button.value = "Pause";
         moving = false;
-        timer = setInterval(step, 200);
+        timer = setInterval(step, 500);
     }
     else {
         button.value = "Play";
@@ -92,27 +92,50 @@ function onChangeTrackBar() {
                     let data = infections[date].infections[index].infected;
                     if (data > 0)
                         size = Math.log(data) / maxInfected * 20;
-                    document.getElementById('increase_' + i).innerHTML = increase[date].increases[index].inf + '%';
+                    let dailyInc = increase[date].increases[index].inf;
+                    document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
                     document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].inf + '%';
+                    addColor(dailyInc, i);
                 }
                 else if (type == 'recovered') {
                     let data = infections[date].infections[index].recovered;
                     if (data > 0)
                         size = Math.log(data) / maxRecovered * 20;
-                    document.getElementById('increase_' + i).innerHTML = increase[date].increases[index].rec + '%';
+                    let dailyInc = increase[date].increases[index].rec;
+                    document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
                     document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].rec + '%';
+                    addColor(dailyInc, i);
                 }
                 else if (type == 'deaths') {
                     let data = infections[date].infections[index].deaths;
                     if (data > 0)
                         size = Math.log(data) / maxDeaths * 20;
-                    document.getElementById('increase_' + i).innerHTML = increase[date].increases[index].dea + '%';
+                    let dailyInc = increase[date].increases[index].dea;
+                    document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
                     document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].dea + '%';
+
+                    addColor(dailyInc, i);
                 }
                 index++;
             }
         }
         $('#region_circle_' + i).css({ r: size });
+    }
+}
+
+function addColor(value, id) {
+    $("#region-table-" + id).removeClass("low");
+    $("#region-table-" + id).removeClass("medium");
+    $("#region-table-" + id).removeClass("top");
+    if (value != 0) {
+
+        if (value < 33) {
+            $("#region-table-" + id).addClass("low");
+        } else if (value < 66) {
+            $("#region-table-" + id).addClass("medium");
+        } else {
+            $("#region-table-" + id).addClass("top");
+        }
     }
 }
 
@@ -128,6 +151,11 @@ function onChangeType(t) {
     clearInterval(timer);
     let button = document.getElementById("play-button");
     button.value = "Play";
+    for (i = 1; i < regions.length + 1; i++) {
+        $("#region-table-" + i).removeClass("low");
+        $("#region-table-" + i).removeClass("medium");
+        $("#region-table-" + i).removeClass("top");
+    }
     onChangeTrackBar();
 }
 
