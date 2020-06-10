@@ -10,6 +10,7 @@ var increase = getJson('GetIncrease', 'daily');
 var ave_increase = getJson('GetIncrease', 'average');
 
 $(function () {
+    zooming();
     var playButton = $("#play-button");
     onChangeTrackBar();
     for (i = 1; i < regions.length + 1; i++) {
@@ -184,6 +185,17 @@ function addDays(date, days) {
     let result = new Date(date);
     result.setDate(result.getDate() + parseInt(days));
     return result;
+}
+
+function zooming() {
+    const svg = d3.select("svg");
+    const g = d3.selectAll(".d-map__region, circle");
+
+    svg.call(d3.zoom()
+        .extent([[0, 0], [1500, 900]])
+        .scaleExtent([1, 4])
+        .on("zoom", function () { g.attr("transform", d3.event.transform) }))
+
 }
 
 function getJson(url, type) {
