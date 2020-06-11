@@ -200,11 +200,11 @@ namespace Visualization.Controllers
                         if (infec_prev.RegionId == infec_next.RegionId)
                         {
                             if (infec_next.Infected != 0 && infec_prev.Infected != 0)
-                                inf[infec_prev.RegionId, i - 1] = (int)Math.Round((float)(infec_next.Infected - infec_prev.Infected) / infec_prev.Infected * 100);
+                                inf[infec_prev.RegionId, i] = (int)Math.Round((float)(infec_next.Infected - infec_prev.Infected) / infec_prev.Infected * 100);
                             if (infec_next.Recovered != 0 && infec_prev.Recovered != 0)
-                                rec[infec_prev.RegionId, i - 1] = (int)Math.Round((float)(infec_next.Recovered - infec_prev.Recovered) / infec_prev.Recovered * 100);
+                                rec[infec_prev.RegionId, i] = (int)Math.Round((float)(infec_next.Recovered - infec_prev.Recovered) / infec_prev.Recovered * 100);
                             if (infec_next.Deaths != 0 && infec_prev.Deaths != 0)
-                                dea[infec_prev.RegionId, i - 1] = (int)Math.Round((float)(infec_next.Deaths - infec_prev.Deaths) / infec_prev.Deaths * 100);
+                                dea[infec_prev.RegionId, i] = (int)Math.Round((float)(infec_next.Deaths - infec_prev.Deaths) / infec_prev.Deaths * 100);
                         }
                     }
                 }

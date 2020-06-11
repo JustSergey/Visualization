@@ -35,16 +35,16 @@ $(function () {
 })
 
 function animation() {
-    var button = document.getElementById("play-button");
-    if (button.value == "Play") {
-        button.value = "Pause";
+    let button = document.getElementById("play-button");
+    if (moving) {
+        button.value = "Play";
         moving = false;
-        timer = setInterval(step, 300);
+        clearInterval(timer);
     }
     else {
-        button.value = "Play";
+        button.value = "Pause";
         moving = true;
-        clearInterval(timer);
+        timer = setInterval(step, 300);
     }
 }
 
@@ -87,56 +87,64 @@ function onChangeTrackBar() {
     let index = 0;
     for (i = 1; i < regions.length + 1; i++) {
         let size = 0;
-        if (index < infections[date].infections.length) {
-            if (i == infections[date].infections[index].region) {
-                if (type == 'infected') {
-                    let data = infections[date].infections[index].infected;
-                    if (data > 0)
-                        size = Math.log(data) / maxInfected * 20;
-                    let dailyInc = increase[date].increases[index].inf;
-                    document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
-                    document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].inf + '%';
-                    addColor(dailyInc, i);
-                }
-                else if (type == 'recovered') {
-                    let data = infections[date].infections[index].recovered;
-                    if (data > 0)
-                        size = Math.log(data) / maxRecovered * 20;
-                    let dailyInc = increase[date].increases[index].rec;
-                    document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
-                    document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].rec + '%';
-                    addColor(dailyInc, i);
-                }
-                else if (type == 'deaths') {
-                    let data = infections[date].infections[index].deaths;
-                    if (data > 0)
-                        size = Math.log(data) / maxDeaths * 20;
-                    let dailyInc = increase[date].increases[index].dea;
-                    document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
-                    document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].dea + '%';
-
-                    addColor(dailyInc, i);
-                }
-                index++;
+        if (index < infections[date].infections.length && i == infections[date].infections[index].region) {
+            if (type == 'infected') {
+                let data = infections[date].infections[index].infected;
+                if (data > 0)
+                    size = Math.log(data) / maxInfected * 20;
+                let dailyInc = increase[date].increases[index].inf;
+                document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
+                document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].inf + '%';
+                addColor(dailyInc, i);
             }
+            else if (type == 'recovered') {
+                let data = infections[date].infections[index].recovered;
+                if (data > 0)
+                    size = Math.log(data) / maxRecovered * 20;
+                let dailyInc = increase[date].increases[index].rec;
+                document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
+                document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].rec + '%';
+                addColor(dailyInc, i);
+            }
+            else if (type == 'deaths') {
+                let data = infections[date].infections[index].deaths;
+                if (data > 0)
+                    size = Math.log(data) / maxDeaths * 20;
+                let dailyInc = increase[date].increases[index].dea;
+                document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
+                document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].dea + '%';
+                addColor(dailyInc, i);
+            }
+            index++;
+        }
+        else {
+            document.getElementById('increase_' + i).innerHTML = '0%';
+            if (type == 'infected')
+                document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].inf + '%';
+            else if (type == 'recovered')
+                document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].rec + '%';
+            else if (type == 'deaths')
+                document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].dea + '%';
+            addColor(0, i);
         }
         $('#region_circle_' + i).css({ r: size });
     }
 }
 
 function addColor(value, id) {
-    $("#region-table-" + id).removeClass("low");
-    $("#region-table-" + id).removeClass("medium");
-    $("#region-table-" + id).removeClass("top");
+    $("#region-table-" + id).css({ 'background-color' : 'rgba(255, 255, 255, .6)' });
     if (value != 0 && type == 'infected') {
-
-        if (value < 33) {
-            $("#region-table-" + id).addClass("low");
-        } else if (value < 66) {
-            $("#region-table-" + id).addClass("medium");
-        } else {
-            $("#region-table-" + id).addClass("top");
-        }
+        let red = Math.round(value * 5.1);
+        if (red > 255)
+            red = 255;
+        if (red < 0)
+            red = 0;
+        let green = 255 - Math.round((value - 50) * 5.1);
+        if (green > 255)
+            green = 255;
+        if (green < 0)
+            green = 0;
+        $("#region-table-" + id).css({ 'background-color': 'rgba(' + red + ', ' + green + ', 0, .6)' });
     }
 }
 
@@ -148,14 +156,14 @@ function onChangeType(t) {
         $('circle').css({ 'fill': 'green' });
     else if (type == 'deaths')
         $('circle').css({ 'fill': 'black' });
-    moving = false;
-    clearInterval(timer);
-    let button = document.getElementById("play-button");
-    button.value = "Play";
+    if (moving) {
+        moving = false;
+        clearInterval(timer);
+        let button = document.getElementById("play-button");
+        button.value = "Play";
+    }
     for (i = 1; i < regions.length + 1; i++) {
-        $("#region-table-" + i).removeClass("low");
-        $("#region-table-" + i).removeClass("medium");
-        $("#region-table-" + i).removeClass("top");
+        $("#region-table-" + i).css({ 'background-color': 'rgba(255, 255, 255, .6)' });
     }
     onChangeTrackBar();
 }

@@ -128,18 +128,6 @@ html {
     display: none;
 }
 
-.top {
-    background-color: red;
-}
-
-.medium {
-    background-color: yellow;
-}
-
-.low {
-    background-color: green;
-}
-
 .header table {
     width: 100%;
     padding: 5px;
