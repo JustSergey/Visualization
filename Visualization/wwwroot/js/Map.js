@@ -39,7 +39,7 @@ function animation() {
     if (button.value == "Play") {
         button.value = "Pause";
         moving = false;
-        timer = setInterval(step, 500);
+        timer = setInterval(step, 300);
     }
     else {
         button.value = "Play";
@@ -128,7 +128,7 @@ function addColor(value, id) {
     $("#region-table-" + id).removeClass("low");
     $("#region-table-" + id).removeClass("medium");
     $("#region-table-" + id).removeClass("top");
-    if (value != 0) {
+    if (value != 0 && type == 'infected') {
 
         if (value < 33) {
             $("#region-table-" + id).addClass("low");
