@@ -93,7 +93,7 @@ function onChangeTrackBar() {
                 if (data > 0)
                     size = Math.log(data) / maxInfected * 20;
                 let dailyInc = increase[date].increases[index].inf;
-                document.getElementById('increase_' + i).innerHTML = dailyInc + '%';
+                document.getElementById('increase_' + i).innerHTML = dailyInc + '% (' + increase[date].increases[index].infc + ')';
                 document.getElementById('ave_increase_' + i).innerHTML = ave_increase[i - 1].inf + '%';
                 addColor(dailyInc, i);
             }
